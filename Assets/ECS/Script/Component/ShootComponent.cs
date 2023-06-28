@@ -66,4 +66,5 @@ public class ShootComponent : MonoBehaviour, IShootComponent
        // currentBulletVelocity.AddForce(outBullet.up * bulletSpeed, ForceMode.Force);
 
     }
+    
 }
