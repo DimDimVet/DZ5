@@ -11,7 +11,7 @@ public class RotationBehaviour : MonoBehaviour,IBehaviour
     }
     public void Behaver()
     {
-        transform.Rotate(Vector3.up,10);
+        //transform.Rotate(Vector3.up,10);
         Debug.Log("rotation");
     }
 

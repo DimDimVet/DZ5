@@ -6,8 +6,8 @@ using UnityEngine.AI;
 public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 {
     public HealtComponent HealtComponent;
-    [SerializeField] private float stopDistance = 1;
-    [SerializeField] private float activDistance = 5;
+    [SerializeField] private float stopDistance = 1f;
+    [SerializeField] private float activDistance = 5f;
     //навигация
     private NavMeshAgent agent;
     private Vector3 pointDefault;
@@ -15,6 +15,10 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     private float currentVelocity;
 
     private Animator animator;
+
+    [SerializeField] private float correctivAngle, polyrAngle=1;
+    private Vector3 target, currentPosition, distanceVector;
+    private float rezulAxisY;
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
@@ -47,6 +51,11 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
             animator.SetFloat("SpeedEnemy", 0);
         }
 
+        target = HealtComponent.transform.position;//Player запишем в цель
+        currentPosition = this.gameObject.transform.position;//проверим текущию позицию Gun
+        distanceVector = target - currentPosition;//вычислим вектор между Gun-target
+        rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
+        this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY+correctivAngle), 0);//повернем Gun angleX
     }
 
     public float Evaluete()
