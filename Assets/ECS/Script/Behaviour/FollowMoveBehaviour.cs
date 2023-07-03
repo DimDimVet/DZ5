@@ -16,7 +16,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 
     private Animator animator;
 
-    [SerializeField] private float correctivAngle, polyrAngle=1;
+    [SerializeField] private float correctivAngle, polyrAngle = 1;
     private Vector3 target, currentPosition, distanceVector;
     private float rezulAxisY;
     private void Start()
@@ -30,7 +30,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     public void Behaver()
     {
         agent.stoppingDistance = stopDistance;
-        currentVelocity=Mathf.Abs(agent.velocity.magnitude);
+        currentVelocity = Mathf.Abs(agent.velocity.magnitude);
 
         if (controlDistance <= activDistance)
         {
@@ -55,7 +55,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
         currentPosition = this.gameObject.transform.position;//проверим текущию позицию Gun
         distanceVector = target - currentPosition;//вычислим вектор между Gun-target
         rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
-        this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY+correctivAngle), 0);//повернем Gun angleX
+        this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
     }
 
     public float Evaluete()
@@ -67,7 +67,16 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 
         //return 1 / (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;//чем ближе значение выше
         controlDistance = (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;
-        return controlDistance;
+
+        if (currentVelocity>0.1f)
+        {
+            return Mathf.Abs(controlDistance);
+        }
+        else
+        {
+            return 0;
+        }
+        
     }
 
 }

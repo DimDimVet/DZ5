@@ -8,31 +8,46 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
     //навигация
     public HealtComponent HealtComponent;
     [SerializeField] private float activDistance = 5f;
-    //private NavMeshAgent agent;
+
+    [SerializeField] private GameObject bullet;
+    [SerializeField] private float bulletSpeed;
+    [SerializeField] private Transform outBullet;
+    public float ShootDelay;
+    private float shootTime = float.MinValue;
+
+    private NavMeshAgent agent;
     //private Animator animator;
-    //private float currentVelocity;
-    private float controlDistance1;
+    private float currentVelocity;
+    private float controlDistance;
     //private Vector3 pointDefault;
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
         //Nav
-        //agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
         //animator = GetComponent<Animator>();
         //pointDefault = this.gameObject.transform.position;
     }
     public void Behaver()
     {
-        if (controlDistance1 <= activDistance)
+        if (controlDistance <= activDistance)
         {
-            Debug.Log("pusk");
-            //agent.destination = HealtComponent.transform.position;//Player запишем в цель
+            if (Time.time < shootTime + ShootDelay)
+            {
+                return;
+            }
+            else
+            {
+                shootTime = Time.time;
+            }
 
+            Instantiate(bullet, outBullet.position, outBullet.rotation);
+            Debug.Log("pusk");
         }
         else
         {
             Debug.Log("Stoppusk");
-            //agent.destination = pointDefault;
+
         }
 
     }
@@ -43,8 +58,18 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
         {
             return 0;
         }
-        //currentVelocity = Mathf.Abs(agent.velocity.magnitude);
-        controlDistance1 = (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;
-        return controlDistance1;
+
+        currentVelocity = Mathf.Abs(agent.velocity.magnitude);
+        controlDistance = (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;
+
+        if (currentVelocity < 0.1f && (controlDistance <= activDistance))
+        {
+            return activDistance;
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 }
