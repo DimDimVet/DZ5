@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 {
-    public HealtComponent HealtComponent, thisHealtComponent;
+    public HealtComponent HealtComponent;
+    private HealtEnemyComponent thisHealtComponent;
     [SerializeField] private float stopDistance = 1f;
     [SerializeField] private float activDistance = 5f;
     //навигация
@@ -22,7 +23,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
-        thisHealtComponent = GetComponent<HealtComponent>();
+        thisHealtComponent = GetComponent<HealtEnemyComponent>();
         //Nav
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -32,6 +33,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     {
         if (thisHealtComponent.Dead != true)
         {
+
             agent.stoppingDistance = stopDistance;
             currentVelocity = Mathf.Abs(agent.velocity.magnitude);
 
@@ -60,19 +62,23 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
             rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
             this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
         }
+        else
+        {
+            agent.enabled = false;
+        }
 
     }
 
     public float Evaluete()
     {
-        if (HealtComponent == null)
+        if (HealtComponent == null || HealtComponent.Dead == true)
         {
             return 0;
         }
 
         //return 1 / (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;//чем ближе значение выше
         controlDistance = (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;
-        if (currentVelocity>0.1f)
+        if (currentVelocity > 0.1f)
         {
             return Mathf.Abs(controlDistance);
         }
@@ -80,7 +86,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
         {
             return 0;
         }
-        
+
     }
 
 }

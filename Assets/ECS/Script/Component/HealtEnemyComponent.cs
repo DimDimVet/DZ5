@@ -4,17 +4,18 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealtComponent : MonoBehaviour
+public class HealtEnemyComponent : MonoBehaviour
 {
     public Settings SettingsData;
     [HideInInspector]public int Healt=0;
     [HideInInspector] public bool Dead = false;
     [SerializeField] private Text text;
-    public bool statusEnemy;
     private Animator animator;
+    private Collider collider;
     private void Start()
     {
         animator = GetComponent<Animator>();
+        collider = GetComponent<Collider>();
         StartCoroutine(Example());
     }
 
@@ -46,7 +47,10 @@ public class HealtComponent : MonoBehaviour
         {
             animator.SetBool("Dead", true);
             Dead = true;
-
+            if (collider!=null)
+            {
+                collider.enabled = false;
+            }
         }
 
     }

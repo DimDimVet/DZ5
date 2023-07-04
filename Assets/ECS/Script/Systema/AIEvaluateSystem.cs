@@ -32,7 +32,7 @@ public class AIEvaluateSystem : ComponentSystem
                         }
                     }
                 }
-                Debug.Log(manager.activeBehaviout);
+                //Debug.Log(manager.activeBehaviout);
             }
             );
     }

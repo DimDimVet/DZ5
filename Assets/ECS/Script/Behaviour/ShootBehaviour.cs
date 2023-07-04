@@ -6,7 +6,8 @@ using UnityEngine.AI;
 public class ShootBehaviour : MonoBehaviour, IBehaviour
 {
     //навигация
-    public HealtComponent HealtComponent, thisHealtComponent;
+    public HealtComponent HealtComponent;
+    private HealtEnemyComponent thisHealtComponent;
     [SerializeField] private float activDistance = 5f;
 
     [SerializeField] private GameObject bullet;
@@ -25,7 +26,7 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
-        thisHealtComponent = GetComponent<HealtComponent>();
+        thisHealtComponent = GetComponent<HealtEnemyComponent>();
         //Nav
         agent = GetComponent<NavMeshAgent>();
     }
@@ -52,6 +53,10 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
             distanceVector = target - currentPosition;//вычислим вектор между Gun-target
             rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
             this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
+        }
+        else
+        {
+            agent.enabled = false;
         }
     }
 

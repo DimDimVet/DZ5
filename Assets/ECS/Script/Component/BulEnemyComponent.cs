@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BullComponent : MonoBehaviour/*, ICollisionsComponent*/
+public class BulEnemyComponent : MonoBehaviour/*, ICollisionsComponent*/
 {
     [SerializeField] private int damage = 10;
 
@@ -38,7 +38,7 @@ public class BullComponent : MonoBehaviour/*, ICollisionsComponent*/
                 decal.transform.rotation = Quaternion.LookRotation(-hit.normal);
                 Destroy(decal, 1);
                 //
-                if (hit.collider.TryGetComponent(out HealtEnemyComponent healt))
+                if (hit.collider.TryGetComponent(out HealtComponent healt))
                 {
                     healt.HealtContoll(damage);
                 }
