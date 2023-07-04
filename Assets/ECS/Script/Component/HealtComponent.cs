@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,9 +8,12 @@ public class HealtComponent : MonoBehaviour
 {
     public Settings SettingsData;
     [HideInInspector]public int Healt=0;
+    [HideInInspector] public bool Dead = false;
     [SerializeField] private Text text;
+    private Animator animator;
     private void Start()
     {
+        animator = GetComponent<Animator>();
         StartCoroutine(Example());
     }
 
@@ -25,7 +29,7 @@ public class HealtComponent : MonoBehaviour
     }
     private void DataStart()
     {
-        if (Healt == 0)
+        if (Healt <= 0)
         {
             Healt = SettingsData.HealtPlayer;
         }
@@ -39,13 +43,10 @@ public class HealtComponent : MonoBehaviour
         text.text = $"Healt = {Healt}";
         if (Healt<=0)
         {
-            Debug.Log("DestroyPlayer");
+            animator.SetBool("Dead", true);
+            Dead = true;
+
         }
-        else
-        {
-            //
-        }
+
     }
-
-
 }

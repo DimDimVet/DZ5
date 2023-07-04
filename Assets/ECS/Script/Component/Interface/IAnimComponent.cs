@@ -7,4 +7,5 @@ public interface IAnimComponent
 {
     void GetMove(float2 currentMove);
     void GetPull(bool currentPull);
+    void GetDestroy(bool currentDestroy);
 }

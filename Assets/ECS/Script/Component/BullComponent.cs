@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BullComponent : MonoBehaviour, ICollisionsComponent
+public class BullComponent : MonoBehaviour/*, ICollisionsComponent*/
 {
     [SerializeField] private int damage = 10;
 
@@ -18,17 +18,17 @@ public class BullComponent : MonoBehaviour, ICollisionsComponent
     {
         startPos = transform.position;
     }
-    public void Execute(List<Collider> colliders)
-    {
-        for (int i = 0; i < colliders.Count; i++)
-        {
-            HealtComponent healt = colliders[i].GetComponent<HealtComponent>();
-            if (healt != null)
-            {
-                healt.HealtContoll(damage);
-            }
-        }
-    }
+    //public void Execute(List<Collider> colliders)
+    //{
+    //    for (int i = 0; i < colliders.Count; i++)
+    //    {
+    //        HealtComponent healt = colliders[i].GetComponent<HealtComponent>();
+    //        if (healt != null)
+    //        {
+    //            healt.HealtContoll(damage);
+    //        }
+    //    }
+    //}
     private void Update()
     {
         transform.Translate(Vector3.forward * Speed * Time.deltaTime);
@@ -47,7 +47,13 @@ public class BullComponent : MonoBehaviour, ICollisionsComponent
                 decal.transform.position = hit.point + hit.normal * 0.001f;
                 decal.transform.rotation = Quaternion.LookRotation(-hit.normal);
                 Destroy(decal, 1);
-                
+                //
+                if (hit.collider.TryGetComponent(out HealtComponent healt))
+                {
+                    healt.HealtContoll(damage);
+                }
+                //
+                Destroy(this.gameObject);
             }
         }
         else

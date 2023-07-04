@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class ShootBehaviour : MonoBehaviour, IBehaviour
 {
     //навигация
-    public HealtComponent HealtComponent;
+    public HealtComponent HealtComponent, thisHealtComponent;
     [SerializeField] private float activDistance = 5f;
 
     [SerializeField] private GameObject bullet;
@@ -16,45 +16,48 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
     private float shootTime = float.MinValue;
 
     private NavMeshAgent agent;
-    //private Animator animator;
     private float currentVelocity;
     private float controlDistance;
-    //private Vector3 pointDefault;
+
+    [SerializeField] private float correctivAngle, polyrAngle = 1;
+    private Vector3 target, currentPosition, distanceVector;
+    private float rezulAxisY;
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
+        thisHealtComponent = GetComponent<HealtComponent>();
         //Nav
         agent = GetComponent<NavMeshAgent>();
-        //animator = GetComponent<Animator>();
-        //pointDefault = this.gameObject.transform.position;
     }
     public void Behaver()
     {
-        if (controlDistance <= activDistance)
+        if (thisHealtComponent.Dead != true)
         {
-            if (Time.time < shootTime + ShootDelay)
+            if (controlDistance <= activDistance)
             {
-                return;
+                if (Time.time < shootTime + ShootDelay)
+                {
+                    return;
+                }
+                else
+                {
+                    shootTime = Time.time;
+                }
+
+                Instantiate(bullet, outBullet.position, outBullet.rotation);
             }
-            else
-            {
-                shootTime = Time.time;
-            }
-
-            Instantiate(bullet, outBullet.position, outBullet.rotation);
-            Debug.Log("pusk");
+            //
+            target = HealtComponent.transform.position;//Player запишем в цель
+            currentPosition = this.gameObject.transform.position;//проверим текущию позицию Gun
+            distanceVector = target - currentPosition;//вычислим вектор между Gun-target
+            rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
+            this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
         }
-        else
-        {
-            Debug.Log("Stoppusk");
-
-        }
-
     }
 
     public float Evaluete()
     {
-        if (HealtComponent == null)
+        if (HealtComponent == null || HealtComponent.Dead==true)
         {
             return 0;
         }
@@ -70,6 +73,8 @@ public class ShootBehaviour : MonoBehaviour, IBehaviour
         {
             return 0;
         }
+
+
 
     }
 }

@@ -35,4 +35,12 @@ public class TranslationAnimComponent : MonoBehaviour, IAnimComponent
             animator.SetBool("JampPlayer", false);
         }
     }
+
+    public void GetDestroy(bool currentDestroy)
+    {
+        if (currentDestroy)
+        {
+            animator.SetBool("JampPlayer", true);
+        }
+    }
 }

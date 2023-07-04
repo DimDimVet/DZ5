@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 {
-    public HealtComponent HealtComponent;
+    public HealtComponent HealtComponent, thisHealtComponent;
     [SerializeField] private float stopDistance = 1f;
     [SerializeField] private float activDistance = 5f;
     //навигация
@@ -22,6 +22,7 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     private void Start()
     {
         HealtComponent = FindObjectOfType<HealtComponent>();//найдем объект с данным компонентом
+        thisHealtComponent = GetComponent<HealtComponent>();
         //Nav
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -29,33 +30,37 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
     }
     public void Behaver()
     {
-        agent.stoppingDistance = stopDistance;
-        currentVelocity = Mathf.Abs(agent.velocity.magnitude);
-
-        if (controlDistance <= activDistance)
+        if (thisHealtComponent.Dead != true)
         {
-            agent.destination = HealtComponent.transform.position;//Player запишем в цель
+            agent.stoppingDistance = stopDistance;
+            currentVelocity = Mathf.Abs(agent.velocity.magnitude);
 
-        }
-        else
-        {
-            agent.destination = pointDefault;
+            if (controlDistance <= activDistance)
+            {
+                agent.destination = HealtComponent.transform.position;//Player запишем в цель
+
+            }
+            else
+            {
+                agent.destination = pointDefault;
+            }
+
+            if (currentVelocity > 0.1f)
+            {
+                animator.SetFloat("SpeedEnemy", 1);
+            }
+            else
+            {
+                animator.SetFloat("SpeedEnemy", 0);
+            }
+
+            target = HealtComponent.transform.position;//Player запишем в цель
+            currentPosition = this.gameObject.transform.position;//проверим текущию позицию Gun
+            distanceVector = target - currentPosition;//вычислим вектор между Gun-target
+            rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
+            this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
         }
 
-        if (currentVelocity > 0.1f)
-        {
-            animator.SetFloat("SpeedEnemy", 1);
-        }
-        else
-        {
-            animator.SetFloat("SpeedEnemy", 0);
-        }
-
-        target = HealtComponent.transform.position;//Player запишем в цель
-        currentPosition = this.gameObject.transform.position;//проверим текущию позицию Gun
-        distanceVector = target - currentPosition;//вычислим вектор между Gun-target
-        rezulAxisY = Mathf.Atan2(distanceVector.x, distanceVector.z) * Mathf.Rad2Deg * polyrAngle;//вычислим угол вектора в градусах
-        this.gameObject.transform.rotation = Quaternion.Euler(0, (rezulAxisY + correctivAngle), 0);//повернем Gun angleX
     }
 
     public float Evaluete()
@@ -67,7 +72,6 @@ public class FollowMoveBehaviour : MonoBehaviour, IBehaviour
 
         //return 1 / (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;//чем ближе значение выше
         controlDistance = (this.gameObject.transform.position - HealtComponent.transform.position).magnitude;
-
         if (currentVelocity>0.1f)
         {
             return Mathf.Abs(controlDistance);
